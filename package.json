@@ -1,0 +1,37 @@
+{
+  "name": "sakila-movie-booking",
+  "version": "1.0.0",
+  "description": "API for Sakila movie booking",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "nodemon server"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/HungTrinh99/Sakila-Movie-Booking.git"
+  },
+  "keywords": [
+    "ExpressJS",
+    "RESTful",
+    "API",
+    "NodeJS",
+    "ReactJS",
+    "MySQL"
+  ],
+  "author": "Hung Trinh",
+  "license": "MIT ",
+  "bugs": {
+    "url": "https://github.com/HungTrinh99/Sakila-Movie-Booking/issues"
+  },
+  "homepage": "https://github.com/HungTrinh99/Sakila-Movie-Booking#readme",
+  "dependencies": {
+    "ajv": "^8.0.1",
+    "dateformat": "^4.5.1",
+    "express": "^4.17.1",
+    "knex": "^0.95.4",
+    "morgan": "^1.10.0",
+    "mysql2": "^2.2.5",
+    "nodemon": "^2.0.7"
+  }
+}

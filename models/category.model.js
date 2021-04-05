@@ -23,4 +23,8 @@ module.exports = {
   delete(id) {
     return db(DB_NAME).del().where("category_id", id);
   },
+
+  update(category, id) {
+    return db(DB_NAME).where("category_id", id).update(category);
+  },
 };

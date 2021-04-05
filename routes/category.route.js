@@ -44,4 +44,21 @@ router.delete("/:id", async function (req, res) {
   await categoriesModel.delete(id);
   res.status(204).json({ msg: "Delete successfully" });
 });
+
+router.put("/:id", async function (req, res) {
+  const currentID = req.params.id;
+  const { name } = req.body;
+  let categoryFields = {};
+
+  if (name) categoryFields.name = name;
+  categoryFields.last_update = dateFormat(new Date(), "yyyy:mm:dd hh:MM:ss");
+
+  const singleCategory = await categoriesModel.single(currentID);
+  if (!singleCategory) return res.json({ msg: "Category not found" });
+
+  const ids = await categoriesModel.update(categoryFields, currentID);
+  categoryFields.category_id = ids[0];
+
+  res.json(categoryFields);
+});
 module.exports = router;

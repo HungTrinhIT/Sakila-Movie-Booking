@@ -15,11 +15,15 @@ module.exports = {
     return countries[0];
   },
 
-  add(category) {
-    return db(DB_NAME).insert(category);
+  add(country) {
+    return db(DB_NAME).insert(country);
   },
 
   delete(id) {
     return db(DB_NAME).del().where("country_id", id);
+  },
+
+  update(country, id) {
+    return db(DB_NAME).where("country_id", id).update(country);
   },
 };

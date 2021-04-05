@@ -57,4 +57,25 @@ router.delete("/:id", async function (req, res) {
   return res.status(204).json({ msg: "Delete succesfully" });
 });
 
+//@route PUT api/films
+//@desc update a actor
+//@access private
+router.put("/:id", async function (req, res) {
+
+  const { first_name, last_name } = req.body;
+  const currentID = req.params.id;
+
+  let actorFields = {};
+  if (first_name) actorFields.first_name = first_name;
+  if (last_name) actorFields.last_name = last_name;
+  actorFields.last_update = dateFormat(new Date(), "yyyy:mm:dd hh:MM:ss");
+
+  const singleActor = await actorModel.single(currentID);
+  if (!singleActor) return res.json({ msg: "Actor not found!" });
+
+  const ids = await actorModel.update(actorFields, currentID);
+  actorFields.actor_id = ids[0];
+  res.json(actorFields);
+});
+
 module.exports = router;

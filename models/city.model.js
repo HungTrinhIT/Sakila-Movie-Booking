@@ -22,4 +22,8 @@ module.exports = {
   delete(id) {
     return db(DB_NAME).del().where("city_id", id);
   },
+
+  update(city, id) {
+    return db(DB_NAME).where("city_id", id).update(city);
+  },
 };

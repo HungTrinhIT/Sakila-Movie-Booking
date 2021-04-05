@@ -32,11 +32,9 @@ router.post("/", validator(citySchema), async function (req, res) {
   newCity.city_id = ids[0];
   res.status(201).json(newCity);
 });
-router.put("/:id", async function (req, res) {
-  res.send("Put");
-});
+
 router.delete("/:id", async function (req, res) {
-  const id = await req.params.id;
+  const id = req.params.id;
 
   const singleCity = await cityModel.single(id);
   if (!singleCity) {
@@ -45,6 +43,21 @@ router.delete("/:id", async function (req, res) {
 
   await cityModel.delete(id);
   res.json({ msg: "Delete succesfully" });
+});
+
+router.put("/:id", async function (req, res) {
+  const id = req.params.id;
+  const { city, country_id } = req.body;
+  const singleCity = await cityModel.single(id);
+  if (!singleCity) return res.json({ msg: "City not found" });
+
+  let cityFields = {};
+  if (city) cityFields.city = city;
+  if (country_id) cityFields.country_id = country_id;
+  cityFields.last_update = dateFormat(new Date(), "yyyy:mm:dd hh:MM:ss");
+
+  const ids = await cityModel.update(cityFields, id);
+  res.json(cityFields);
 });
 
 module.exports = router;

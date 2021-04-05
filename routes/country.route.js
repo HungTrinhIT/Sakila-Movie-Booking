@@ -3,6 +3,7 @@ const router = express.Router();
 const countryModel = require("../models/country.model");
 const countrySchema = require("../schemas/country.json");
 const validator = require("../middlewares/validate.mdw");
+const dateFormat = require("dateformat");
 router.get("/", async function (req, res) {
   const countries = await countryModel.all();
   res.json(countries);
@@ -45,9 +46,19 @@ router.delete("/:id", async function (req, res) {
   res.json({ msg: "Delete succesfully" });
 });
 
-router.put("/:id", function (req, res) {
-  res.json({ msg: "Update" });
+router.put("/:id", async function (req, res) {
+  const id = req.params.id;
+  const { country } = req.body;
+  const singleCountry = await countryModel.single(id);
+  if (!singleCountry) return res.json({ msg: "Country not found" });
+
+  let countryFields = {};
+  if (country) countryFields.country = country;
+
+  countryFields.last_update = dateFormat(new Date(), "yyyy:mm:dd hh:MM:ss");
+
+  const ids = await countryModel.update(countryFields, id);
+  res.json(countryFields);
 });
 
 module.exports = router;
-6;

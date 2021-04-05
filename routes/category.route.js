@@ -3,28 +3,18 @@ const router = express.Router();
 const categoriesModel = require("../models/category.model");
 const dateFormat = require("dateformat");
 router.get("/", async function (req, res) {
-  try {
-    const categories = await categoriesModel.all();
-    res.json(categories);
-  } catch (e) {
-    console.log(e.message);
-    res.status(500).send("Server error");
-  }
+  const categories = await categoriesModel.all();
+  res.json(categories);
 });
 
 router.get("/:id", async function (req, res) {
-  try {
-    const id = req.params.id;
-    const category = await categoriesModel.single(id);
-    if (category === null) {
-      return res.status(204).json({ msg: "Film is not existence" });
-    }
-
-    res.json(category);
-  } catch (e) {
-    console.log(e.message);
-    res.status(500).send("Server error!");
+  const id = req.params.id;
+  const category = await categoriesModel.single(id);
+  if (category === null) {
+    return res.status(204).json({ msg: "Film is not existence" });
   }
+
+  res.json(category);
 });
 
 const categorySchema = require("../schemas/category.json");
@@ -33,18 +23,25 @@ router.post(
   require("../middlewares/validate.mdw")(categorySchema),
   async function (req, res) {
     const { name } = req.body;
-    try {
-      const newCat = {
-        name,
-        last_update: dateFormat(new Date(), "yyyy-mm-dd hh:MM:ss"),
-      };
-      const ids = await categoriesModel.add(newCat);
-      newCat.id = ids[0];
-      res.json(newCat);
-    } catch (e) {
-      console.log(e.message);
-      res.status(500).send("Server error");
-    }
+    const newCat = {
+      name,
+      last_update: dateFormat(new Date(), "yyyy-mm-dd hh:MM:ss"),
+    };
+    const ids = await categoriesModel.add(newCat);
+    newCat.id = ids[0];
+    res.status(201).json(newCat);
   }
 );
+
+router.delete("/:id", async function (req, res) {
+  const id = req.params.id;
+
+  const singleCategory = await categoriesModel.single(id);
+  if (!singleCategory) {
+    return res.status(204).json({ msg: "Category not found" });
+  }
+
+  await categoriesModel.delete(id);
+  res.status(204).json({ msg: "Delete successfully" });
+});
 module.exports = router;

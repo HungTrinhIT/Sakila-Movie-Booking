@@ -1,12 +1,13 @@
 const db = require("../utils/db");
+const DB_NAME = "category";
 
 module.exports = {
   all() {
-    return db("category");
+    return db(DB_NAME);
   },
 
   async single(id) {
-    const categories = await db("category").where("category_id", id);
+    const categories = await db(DB_NAME).where("category_id", id);
 
     if (categories.length === 0) {
       return null;
@@ -16,6 +17,10 @@ module.exports = {
   },
 
   add(category) {
-    return db("category").insert(category);
+    return db(DB_NAME).insert(category);
+  },
+
+  delete(id) {
+    return db(DB_NAME).del().where("category_id", id);
   },
 };

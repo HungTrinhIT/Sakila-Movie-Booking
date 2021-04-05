@@ -1,0 +1,11 @@
+{
+    "required": [
+        "country"
+    ],
+    "additionalProperties": false,
+    "properties": {
+        "country": {
+            "type": "string"
+        }
+    }
+}

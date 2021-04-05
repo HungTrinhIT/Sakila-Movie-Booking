@@ -46,20 +46,15 @@ router.post("/", validator(actorSchema), async function (req, res) {
 //@desc delete a actor
 //@access private
 router.delete("/:id", async function (req, res) {
-  try {
-    console.log("Hello");
-    const id = req.params.id;
-    const actor = await actorModel.single(id);
-    if (actor === null) {
-      res.status(204).send("No data");
-    }
+  const id = req.params.id;
 
-    await actorModel.del(id);
-    res.json({ msg: "actor removed" });
-  } catch (e) {
-    console.log(e.message);
-    res.status(500).send("Server error!");
+  const singleActor = await actorModel.single(id);
+  if (!singleActor) {
+    res.status(204).json({ msg: "Actor not found" });
   }
+
+  await actorModel.delete(id);
+  return res.status(204).json({ msg: "Delete succesfully" });
 });
 
 module.exports = router;

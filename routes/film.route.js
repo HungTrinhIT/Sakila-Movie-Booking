@@ -42,6 +42,22 @@ router.post(
 //@route POST api/films
 //@desc Add new film
 //access Private
-router.delete("/");
+router.delete("/:id", async function (req, res) {
+  const id = req.params.id;
+  const singleFilm = await filmModel.single(id);
+
+  if (!singleFilm) {
+    return res.status(204).json({ msg: "Film is not exsit" });
+  }
+
+  await filmModel.delete(id);
+
+  res.status(204).json({ msg: "Delete Succesfully" });
+});
+
+//@route POST api/films
+//@desc Add new film
+//access Private
+router.put("/");
 
 module.exports = router;

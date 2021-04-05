@@ -1,12 +1,12 @@
 const db = require("../utils/db");
-
+const DB_NAME = "actor";
 module.exports = {
   all() {
-    return db("actor");
+    return db(DB_NAME);
   },
 
   async single(id) {
-    const actors = await db("actor").where("actor_id", id);
+    const actors = await db(DB_NAME).where("actor_id", id);
 
     if (actors.length === 0) {
       return null;
@@ -16,10 +16,10 @@ module.exports = {
   },
 
   add(actor) {
-    return db("actor").insert(actor);
+    return db(DB_NAME).insert(actor);
   },
 
-  del(id) {
-    return db("actor").where("actor_id", id).del();
+  delete(id) {
+    return db(DB_NAME).del().where("actor_id", id);
   },
 };

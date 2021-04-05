@@ -61,7 +61,6 @@ router.delete("/:id", async function (req, res) {
 //@desc update a actor
 //@access private
 router.put("/:id", async function (req, res) {
-
   const { first_name, last_name } = req.body;
   const currentID = req.params.id;
 

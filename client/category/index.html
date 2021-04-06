@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sakila Client</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" type="text/css"
+        href="https://cdn.datatables.net/v/bs4-4.1.1/dt-1.10.24/datatables.min.css" />
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+</head>
+
+<body>
+
+    <div class="container mt-3">
+        <div class="row">
+            <div class="col-sm-12">
+                <button type="button" id="btnLoadCities" class="btn btn-outline-danger btn-lg btn-block">
+                    Load categories
+                </button>
+            </div>
+        </div>
+
+        <div class="row mt-3">
+            <div class="col-sm-12">
+                <div class="card">
+
+                    <h3 class="card-header d-flex justify-content-between">
+                        Category list from Sakila
+                        <a class="btn btn-primary" href="add.html" role="button">
+                            <i class="fa fa-plus" aria-hidden="true"></i>
+                            Add category
+                        </a>
+                    </h3>
+
+                    <div class="card-body">
+
+                        <!-- Table -->
+                        <table class="table table-hover" id="table_id">
+
+                            <!-- Table header -->
+                            <thead>
+                                <tr>
+                                    <th scope="col">#</th>
+                                    <th scope="col">Category name</th>
+                                    <th scope="col">Last update</th>
+                                    <th scope="col">&nbsp</th>
+                                </tr>
+                            </thead>
+                            <!-- End table head -->
+
+                            <!-- Table body -->
+                            <tbody id="city_container">
+                            </tbody>
+                            <!-- End table body -->
+
+                        </table>
+                        <!-- End table -->
+                    </div>
+                    <div class="card-footer text-muted text-center">
+                        Copyright sakila movie booking
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="https://cdn.datatables.net/v/bs4-4.1.1/dt-1.10.24/datatables.min.js"></script>
+    <script src="//cdn.jsdelivr.net/npm/sweetalert2@10"></script>
+
+    <script>
+
+        $(document).ready(function () {
+
+            // Get all cities
+            $('#btnLoadCities').on('click', function () {
+
+                $.ajax({
+                    url: 'http://localhost:5000/api/categories',
+                    type: 'GET'
+                }).done(function (data) {
+
+
+                    // console.log(data);
+                    for (f of data) {
+                        const tr = `<tr>
+                                <th scope="row">${f.category_id}</th>
+                                <td>${f.name}</td>
+                                <td>${f.last_update}</td>
+                                <td>
+                                    <i data-id=${f.category_id} class="deleteRow fa fa-trash text-danger mr-3" style="cursor:pointer;font-size:18px;"></i>
+                                    <a  href="edit.html" data-id=${f.category_id} class="editRow"> 
+                                        <i  class="fa fa-edit text-success" style="cursor:pointer;font-size:18px;"></i>
+                                    </a>
+                                </td>
+                                </tr>`;
+                        $('#city_container').append(tr);
+                    }
+
+                    $('#table_id').DataTable();
+                })
+            });
+
+            // Delte city
+            $('#city_container').on('click', '.deleteRow', function (e) {
+
+                e.preventDefault();
+                const category_id = +$(this).data('id');
+
+                Swal.fire({
+                    title: 'Are you sure?',
+                    text: "You won't be able to revert this!",
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonText: 'Yes, delete it!',
+                    cancelButtonText: 'No, cancel!',
+                    reverseButtons: true
+                }).then(result => {
+                    if (result.value) {
+                        if (result.isConfirmed) {
+                            $.ajax({
+                                url: `http://localhost:5000/api/categories/${category_id}`,
+                                type: "DELETE"
+                            }).done((data) => {
+                                $('#table_id').DataTable().row($(this).parents('tr')).remove().draw();
+                                Swal.fire(
+                                    'Deleted!',
+                                    'Your file has been deleted.',
+                                    "success"
+                                )
+                            })
+                        }
+                    }
+                })
+            })
+
+
+            // Edit city
+            $('#city_container').on('click', '.editRow', function (e) {
+                const category_id = +$(this).data('id');
+                localStorage.setItem("selectedCategory", category_id);
+            })
+
+        })
+
+    </script>
+</body>
+
+</html>

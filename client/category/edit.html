@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sakila Client</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+</head>
+
+<body>
+    <div class="container mt-3">
+        <div class="row">
+            <div class="col-sm-12">
+                <div class="card">
+                    <h3 class="card-header text-center">
+                        Edit city form
+                    </h3>
+                    <div class="card-body">
+                        <form id='submitform'>
+                            <div class="form-group">
+                                <label for="txtCategoryID">Category ID</label>
+                                <input type="text" id="txtCategoryID" class="form-control" value="" autofocus>
+                            </div>
+                            <div class="form-group">
+                                <label for="txtCategory">Category name</label>
+                                <input type="text" id="txtCategory" class="form-control" val="" autofocus>
+                            </div>
+
+
+                            <button type="submit" id="btnSave" class="btn btn-outline-success">
+                                <i class="fa fa-check" aria-hidden="true"></i>
+                                Save
+                            </button>
+                        </form>
+                    </div>
+                    <div class="card-footer text-muted">
+                        Footer
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/js/bootstrap.min.js"></script>
+    <script src="//cdn.jsdelivr.net/npm/sweetalert2@10"></script>
+    <script>
+
+        $(document).ready(function () {
+
+            const selectedCategory = localStorage.getItem('selectedCategory');
+            let categoryId;
+
+            // Pass data to form
+            $.ajax({
+                type: 'GET',
+                url: `http://localhost:5000/api/categories/${selectedCategory}`
+            }).done(data => {
+                const { category_id, name } = data;
+                categoryId = category_id;
+                $('#txtCategoryID').val(category_id).attr('disabled', true);
+                $('#txtCategory').val(name);
+
+            })
+
+            $('#submitform').submit(function (e) {
+
+                e.preventDefault();
+
+                const dataToPost = {
+                    category_id: $('#txtCategoryID').val(),
+                    name: $('#txtCategory').val(),
+                }
+
+                const jsonToPost = JSON.stringify(dataToPost);
+
+                $.ajax({
+                    url: `http://localhost:5000/api/categories/${categoryId}`,
+                    type: 'PUT',
+                    dataType: 'json',
+                    data: jsonToPost,
+                    contentType: 'application/json'
+                }).done(function (data) {
+                    Swal.fire({
+                        title: 'Edit city succesfully!',
+                        text: 'Do you want to continue',
+                        icon: 'success',
+                        confirmButtonText: 'Cool'
+                    })
+                })
+            })
+        })
+
+    </script>
+</body>
+
+</html>

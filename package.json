@@ -27,6 +27,7 @@
   "homepage": "https://github.com/HungTrinh99/Sakila-Movie-Booking#readme",
   "dependencies": {
     "ajv": "^8.0.1",
+    "cors": "^2.8.5",
     "dateformat": "^4.5.1",
     "express": "^4.17.1",
     "express-async-errors": "^3.1.1",

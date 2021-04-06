@@ -1,10 +1,11 @@
 const express = require("express");
 const morgan = require("morgan");
-
+const cors = require("cors");
 const app = express();
 require("express-async-errors");
 app.use(morgan("dev"));
 app.use(express.json());
+app.use(cors());
 
 // Routing
 app.use("/api/films", require("./routes/film.route"));
@@ -27,5 +28,6 @@ app.use(function (err, req, res, next) {
     error_message: "Something broke!",
   });
 });
+
 PORT = 5000;
 app.listen(PORT, () => `Server is running at PORT=${PORT}`);

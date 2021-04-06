@@ -3,16 +3,27 @@ const router = express.Router();
 const cityModel = require("../models/city.model");
 const validator = require("../middlewares/validate.mdw");
 const dateFormat = require("dateformat");
+const countryModel = require("../models/country.model");
 const citySchema = require("../schemas/city.json");
 router.get("/", async function (req, res) {
   const cities = await cityModel.all();
+
+  for (let i = 0; i < cities.length; i++) {
+    const singleCountry = await countryModel.single(cities[i].country_id);
+    if (!singleCountry) {
+      cities[i].nationOfCity = "";
+    } else cities[i].nationOfCity = singleCountry.country;
+  }
+
   res.json(cities);
 });
 
 router.get("/:id", async function (req, res) {
   const id = req.params.id;
-
   const singleCity = await cityModel.single(id);
+  const singleCountry = await countryModel.single(singleCity.country_id);
+  if (!singleCountry) singleCity.nationOfCity = "";
+  else singleCity.nationOfCity = singleCountry.country;
   if (!singleCity) {
     return res.status(204).json({ msg: "City not found" });
   }
@@ -37,6 +48,7 @@ router.delete("/:id", async function (req, res) {
   const id = req.params.id;
 
   const singleCity = await cityModel.single(id);
+
   if (!singleCity) {
     return res.json({ msg: "City not found" });
   }
